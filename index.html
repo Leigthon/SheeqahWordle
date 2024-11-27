@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wordle Game - iLuvU</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        padding: 50px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 60px);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .cell {
+        width: 60px;
+        height: 60px;
+        background-color: #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        border-radius: 5px;
+      }
+      .correct {
+        background-color: green;
+        color: white;
+      }
+      .present {
+        background-color: yellow;
+        color: white;
+      }
+      .absent {
+        background-color: grey;
+        color: white;
+      }
+      .input-row input {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        text-align: center;
+        margin: 5px;
+      }
+      .btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Wordle - Guess the word!</h1>
+    <div class="grid">
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="guess1" maxlength="1" />
+      <input type="text" id="guess2" maxlength="1" />
+      <input type="text" id="guess3" maxlength="1" />
+      <input type="text" id="guess4" maxlength="1" />
+      <input type="text" id="guess5" maxlength="1" />
+    </div>
+
+    <button class="btn" id="submitGuess">Submit Guess</button>
+
+    <div id="message"></div>
+
+    <script>
+      const solution = "iLuvU"; // The solution to the puzzle
+      const submitButton = document.getElementById("submitGuess");
+      const messageDiv = document.getElementById("message");
+      let attempts = 0;
+
+      submitButton.addEventListener("click", () => {
+        const guess = [
+          document.getElementById("guess1").value,
+          document.getElementById("guess2").value,
+          document.getElementById("guess3").value,
+          document.getElementById("guess4").value,
+          document.getElementById("guess5").value,
+        ].join("");
+
+        if (guess.length !== 5) {
+          messageDiv.textContent = "Please enter exactly 5 letters.";
+          return;
+        }
+
+        attempts++;
+        let feedback = [];
+
+        for (let i = 0; i < 5; i++) {
+          if (guess[i] === solution[i]) {
+            feedback.push("correct");
+          } else if (solution.includes(guess[i])) {
+            feedback.push("present");
+          } else {
+            feedback.push("absent");
+          }
+        }
+
+        updateGrid(feedback, guess);
+
+        if (guess === solution) {
+          messageDiv.textContent = "Congratulations! You guessed the word!";
+        } else if (attempts === 6) {
+          messageDiv.textContent = `Game over! The word was "${solution}".`;
+        }
+      });
+
+      function updateGrid(feedback, guess) {
+        const grid = document.querySelector(".grid");
+        grid.innerHTML = ""; // Clear the grid before updating
+
+        for (let i = 0; i < 5; i++) {
+          const cell = document.createElement("div");
+          cell.classList.add("cell", feedback[i]);
+          cell.textContent = guess[i].toUpperCase();
+          grid.appendChild(cell);
+        }
+      }
+    </script>
+  </body>
+</html>
